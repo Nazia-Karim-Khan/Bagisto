@@ -1,0 +1,16 @@
+apiVersion: kpack.io/v1alpha2
+kind: Image
+metadata:
+  name: bagisto-app
+  namespace: kpack
+spec:
+  tag: harbor.local.fintech23.xyz/apps/bagisto-app
+  builder:
+    kind: ClusterBuilder
+    name: bagisto-cluster-builder
+  serviceAccountName: kpack-service-account
+  source:
+    git:
+      url: https://github.com/your-org/bagisto-open-source.git
+      revision: main
+

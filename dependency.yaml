@@ -2,43 +2,39 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-secret
-  namespace: mysql-operator
+  namespace: bagisto
 type: Opaque
 data:
-  # root password is required to be specified
   ROOT_PASSWORD: cGFzc3dvcmQ=
-  # a user name to be created, not required
   USER: YmFnaXN0b191c2Vy
-  # a password for user, not required
   PASSWORD: cGFzc3dvcmQ=
-  # a name for database that will be created, not required
   DATABASE: YmFnaXN0b19kYg==
 ---
 apiVersion: v1
 kind: Secret
 metadata:
   name: mysql-cluster-backup-secret
-  namespace: mysql-operator
+  namespace: bagisto
 type: Opaque
 stringData:
-  AWS_ACCESS_KEY_ID: minioadmin
-  AWS_SECRET_ACCESS_KEY: minioadmin123
+  AWS_ACCESS_KEY_ID: HzKAWLryNAqVlb9c5m9e
+  AWS_SECRET_ACCESS_KEY: IMcjZkH45UjJXb5v1SDLOBY2Pdu4mR57wpxnXRIA
   AWS_REGION: us-east-1
   S3_PROVIDER: Other
-  S3_ENDPOINT: http://minio.minio.svc.cluster.local:9000
+  S3_ENDPOINT: http://minio-central-db-backups-hl.minio-central-db-backups.svc.cluster.local:9000
   AWS_STORAGE_CLASS: STANDARD
 ---
 apiVersion: mysql.presslabs.org/v1alpha1
 kind: MysqlCluster
 metadata:
   name: mysql-cluster
-  namespace: mysql-operator
+  namespace: bagisto
 spec:
   replicas: 2
   secretName: mysql-secret
-  backupSchedule: "0 0 0 * * *" 
+  backupSchedule: "0 0 0 * * 0" #weekly
   backupSecretName: mysql-cluster-backup-secret
-  backupURL:  s3://mysql-backups/backups/
+  backupURL:  s3://wal-backups/spilo/mysql
   backupRemoteDeletePolicy: delete
   volumeSpec:
       persistentVolumeClaim:

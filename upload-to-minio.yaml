@@ -1,0 +1,83 @@
+# apiVersion: argoproj.io/v1alpha1
+# kind: Workflow
+# metadata:
+#   name: upload-mysql-tar
+#   namespace: argo
+# spec:
+#   entrypoint: upload-to-minio
+#   templates:
+#   - name: upload-to-minio
+#     container:
+#       image: python:3.11-alpine
+#       command: [sh, -c]
+#       args:
+#         - |
+#           pip install boto3 && \
+#           python3 -c '
+# import boto3
+# from botocore.client import Config
+
+# s3 = boto3.client(
+#     "s3",
+#     endpoint_url="http://minio-central-db-backups-hl.minio-central-db-backups.svc.cluster.local:9000",
+#     aws_access_key_id="HzKAWLryNAqVlb9c5m9e",
+#     aws_secret_access_key="IMcjZkH45UjJXb5v1SDLOBY2Pdu4mR57wpxnXRIA",
+#     config=Config(signature_version="s3v4"),
+#     region_name="us-east-1"
+# )
+
+# bucket = "mysql-backups"
+# object_name = "2025-04-23_05-00-04_5S74G4HQ03_DBDUMP.tar"
+# file_path = "/backup/2025-04-23_05-00-04_5S74G4HQ03_DBDUMP.tar"
+
+# try:
+#     s3.head_bucket(Bucket=bucket)
+# except:
+#     s3.create_bucket(Bucket=bucket)
+
+# s3.upload_file(file_path, bucket, object_name)
+# print("Upload complete.")
+# '
+#       volumeMounts:
+#         - name: local-downloads
+#           mountPath: /backup
+#     volumes:
+#       - name: local-downloads
+#         hostPath:
+#           path: /home/nazia/Downloads
+#           type: Directory
+
+
+
+import boto3
+from botocore.client import Config
+
+s3 = boto3.client(
+    "s3",
+    endpoint_url="http://minio-central-db-backups-hl.minio-central-db-backups.svc.cluster.local:9000",
+    aws_access_key_id="HzKAWLryNAqVlb9c5m9e",
+    aws_secret_access_key="IMcjZkH45UjJXb5v1SDLOBY2Pdu4mR57wpxnXRIA",
+    config=Config(signature_version="s3v4"),
+    region_name="us-east-1"
+)
+
+bucket = "mysql-backups"
+object_name = "2025-04-23_05-00-04_5S74G4HQ03_DBDUMP.tar"
+file_path = "/backup/2025-04-23_05-00-04_5S74G4HQ03_DBDUMP.tar"
+
+try:
+    s3.head_bucket(Bucket=bucket)
+except:
+    s3.create_bucket(Bucket=bucket)
+
+s3.upload_file(file_path, bucket, object_name)
+print("Upload complete.")
+'
+      volumeMounts:
+        - name: local-downloads
+          mountPath: /backup
+    volumes:
+      - name: local-downloads
+        hostPath:
+          path: /home/nazia/Downloads
+          type: Directory

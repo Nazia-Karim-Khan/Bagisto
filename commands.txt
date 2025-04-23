@@ -1,0 +1,17 @@
+kubectl port-forward svc/mysql-cluster-mysql-master 3307:3306 -n bagisto
+
+
+mysql -h 127.0.0.1 -P 3307 -u root -p
+
+CREATE DATABASE ethereum;
+
+mysql -h 127.0.0.1 -P 3307 -u root -p ethereum < /home/nazia/Downloads/backup/eth_fixed.sql 
+
+
+mysql -h 127.0.0.1 -P 3307 -u root -p
+Enter password: 
+
+mysql> USE ethereum;
+
+mysql> show tables;
+

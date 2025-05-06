@@ -69,3 +69,7 @@ Records: 4  Duplicates: 0  Warnings: 0
 kubectl apply -f mysql/cluster-backup.yaml
 
 mc ls localminio
+
+
+
+Ref: https://www.bitpoke.io/docs/mysql-operator/getting-started/
